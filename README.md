@@ -1,6 +1,6 @@
 # CleanTrack Kawempe
 
-A communityv oriented waste collection reporting system for Kawempe Division, Kampala.  Residents report missed collections, overflowing collection points and illegal dumping; coordinators assign collection teams and follow each case to closure.
+A community-oriented waste collection reporting system for Kawempe Division, Kampala.  Residents report missed collections, overflowing collection points and illegal dumping; coordinators assign collection teams and follow each case to closure.
 
 The project has two technical parts: a **relational database** (Microsoft Access) and a **network model** (Cisco Packet Tracer), documented in a Word report.
 
@@ -10,13 +10,13 @@ The project has two technical parts: a **relational database** (Microsoft Access
 
 | File | Purpose |
 |---|---|
-| `CleanTrack_Project_Kawempe.accdb` | Access database (data tier) |
-| `cleantracer_wa_fixed.pkt` | Corrected Packet Tracer network model |
-| `CleanTrack_Kawempe_updated.docx` | Project report (design, screenshots, verification) |
+| `CleanTrack_Project Kawempe.accdb` | Access database (data tier) |
+| `cleantracer Network.pkt` | Corrected Packet Tracer network model |
+| `CleanTrack_Kawempe.docx` | Project report (design, screenshots, verification) |
 | `CleanTrack_Access_Completion.bas` | VBA module that completes missing data and relationships in the database |
 | `README.md` | This file |
 
-The original, unfixed `cleantracer_wa.pkt` is superseded by `cleantracer_wa_fixed.pkt`.
+The original, unfixed `cleantracer_wa.pkt` is superseded by `cleantracer Network.pkt`.
 
 **Requirements:** Microsoft Access (2013 or later), Cisco Packet Tracer 9.0 or later, Microsoft Word.
 
@@ -51,7 +51,7 @@ Back up the `.accdb`, then:
 2. **File > Import File...** and choose `CleanTrack_Access_Completion.bas`.
 3. Press **Ctrl+G**, type `CompleteCleanTrack` and press Enter.
 
-The script normalises role names (`Residents` to `Resident`), adds two sample collection-team users, fills `CollectionDay`, creates sample assignments for reports 1 to 3, and adds the missing Users relationships. Each step checks first, so it is safe to run twice. The names and phone numbers it adds are sample data.
+The script normalises role names (`Residents` to `Resident`), adds two sample collection-team users, fills `CollectionDay`, creates sample assignments for reports 1 to 3, and adds the missing Users relationships. The script checks before adding data, but if assignment creation stops partway through, rerunning it will skip the remaining sample assignments when any assignment already exists. Review the database after running it. The names and phone numbers it adds are sample data.
 
 ### Known gaps
 
@@ -62,7 +62,7 @@ The script normalises role names (`Residents` to `Resident`), adds two sample co
 
 ## 2. Network (Cisco Packet Tracer)
 
-Open `cleantracer_wa_fixed.pkt`. It models three sites joined through an ISP router.
+Open `cleantracer Network.pkt`. It models three sites joined through an ISP router.
 
 | Site | Subnet | Devices |
 |---|---|---|
@@ -120,7 +120,7 @@ Run these in Packet Tracer and capture screenshots for the report.
 
 ## 3. Report
 
-`CleanTrack_Kawempe_updated.docx` covers the architecture, database design, network design and addressing. Section 3.3 holds the services and verification tests, with yellow placeholders where the cross-site test screenshots still need to be inserted. Section 3.4 lists the network corrections.
+`CleanTrack_Kawempe.docx` covers the architecture, database design, network design and addressing. Section 3.3 holds the services and verification tests, with yellow placeholders where the cross-site test screenshots still need to be inserted. Section 3.4 lists the network corrections.
 
 ---
 
