@@ -3,10 +3,10 @@ Option Compare Database
 Option Explicit
 '------------------------------------------------------------------
 ' CleanTrack Kawempe - completes the missing data and relationships
-' HOW TO RUN: open CleanTrack_Project_Kawempe.accdb (keep a backup copy),
+' HOW TO RUN: open CleanTrack_Project Kawempe.accdb (keep a backup copy),
 ' press Alt+F11, File > Import File... choose this .bas, then
 ' press Ctrl+G and type:  CompleteCleanTrack   (Enter)
-' Safe to run twice: every step checks before it adds anything.
+' Existing assignments are preserved and checked per report on rerun.
 '------------------------------------------------------------------
 Public Sub CompleteCleanTrack()
     Dim db As DAO.Database: Set db = CurrentDb
@@ -26,19 +26,22 @@ Public Sub CompleteCleanTrack()
     db.Execute "UPDATE ServiceAreas SET CollectionDay='Thursday'  WHERE AreaID=4 AND CollectionDay IS NULL", dbFailOnError
     db.Execute "UPDATE ServiceAreas SET CollectionDay='Friday'    WHERE AreaID=5 AND CollectionDay IS NULL", dbFailOnError
 
-    ' 4. Assignments table is empty - dispatch the first three reports
-    If DCount("*", "Assignments") = 0 Then
-        coord = Nz(DLookup("UserID", "Users", "UserRole='Coordinator'"), 0)
-        teamA = Nz(DLookup("UserID", "Users", "FullName='Ssemakula Ivan'"), 0)
-        teamB = Nz(DLookup("UserID", "Users", "FullName='Nakato Juliet'"), 0)
-        If coord > 0 And teamA > 0 And teamB > 0 Then
-            For r = 1 To 3
-                If DCount("*", "Reports", "ReportID=" & r) > 0 Then
+    ' 4. Add a sample assignment only when that report has none.
+    ' This allows a rerun to finish after a partial failure.
+    coord = Nz(DLookup("UserID", "Users", "UserRole='Coordinator'"), 0)
+    teamA = Nz(DLookup("UserID", "Users", "FullName='Ssemakula Ivan' AND UserRole='CollectionTeam'"), 0)
+    teamB = Nz(DLookup("UserID", "Users", "FullName='Nakato Juliet' AND UserRole='CollectionTeam'"), 0)
+    If coord > 0 And teamA > 0 And teamB > 0 Then
+        For r = 1 To 3
+            If DCount("*", "Reports", "ReportID=" & r) > 0 Then
+                If DCount("*", "Assignments", "ReportID=" & r) = 0 Then
                     db.Execute "INSERT INTO Assignments (ReportID, CoordinatorID, TeamMemberID, AssignedAt, TargetDate) " & _
                         "VALUES (" & r & "," & coord & "," & IIf(r Mod 2 = 1, teamA, teamB) & ",Now(),Date()+3)", dbFailOnError
                 End If
-            Next r
-        End If
+            End If
+        Next r
+    Else
+        MsgBox "Sample assignments were skipped: a coordinator or collection team user was not found. Check user roles and rerun.", vbExclamation
     End If
 
     ' 5. Relationships still missing (every Users foreign key must be enforced)
